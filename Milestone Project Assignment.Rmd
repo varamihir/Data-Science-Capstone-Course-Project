@@ -1,0 +1,151 @@
+---
+title: "Week 2 Capstone Milestone Project"
+author: "Varamihir"
+date: "December 28, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+setwd("C:/Users/nvarshney/Desktop/R programming/Coursera/Git Hub and Programming assignments/Course10/Week 1/en_US")
+knitr::opts_knit$set(root.dir = getwd())
+```
+
+##Introduction
+
+This report presents some basic exploratory analysis made for the Milestone Report Submission in the Data Science Capstone course by Johns Hopkins at Coursera. The course objective is to apply data science in the area of natural language processing. The final result of the course will be to construct a Shiny application that accepts some text inputed by the user and try to predict what the next word will be. As start the course have provided a set of files containing texts extracted from blogs, news/media sites and twitter, to be used as a input in the creation of a prediction algorithm. 
+
+##Getting Data into R
+
+The data(zip file) provided in this course consist of four sets of files in  different languages(de_DE - Danish, en_US - English,fi_FI - Finnish an ru_RU - Russian). Each consists 3 text files with texts from blogs, news/media and twitter. In this we will just focus on english language sets of files.
+
+
+```{r, echo = TRUE, eval = FALSE}
+# Load the packages to explore the data.
+library(tm)
+library(irlba)
+library(R.utils)
+library(stringi)
+library(NLP)
+library(RWeka)
+library(ggplot2)
+library(SnowballC)
+library(slam)
+library(qdap)
+library(ggplot2)
+```
+
+```{r,echo = TRUE}
+# Read the data into R
+blog <- readLines("en_US.blogs.txt")
+news <- readLines("en_US.news.txt")
+twitter <- readLines("en_US.twitter.txt")
+```
+
+#####We examined the data sets and summarize our findings(file size,line counts,no.of characters and word counts per line)
+
+```{r, echo = TRUE}
+#Size of Files
+blog.size <- file.info("en_US.blogs.txt")$size/1024^2
+news.size <- file.info("en_US.news.txt")$size/1024^2
+twitter.size <- file.info("en_US.twitter.txt")$size/1024^2
+# No.of Lines
+blogtext_length <- length(blog)
+newstext_length <- length(readLines("en_US.news.txt"))
+twittertext_length <- length(twitter)
+#No.of characters
+blog_char <- sum(nchar(blog))
+news_char <- sum(nchar(news))
+twitter_char <- sum(nchar(twitter))
+# No.of words
+blog_words <- sum(stringi::stri_count_words(blog))
+news_words <- sum(stringi::stri_count_words(news))
+twitter_words <- sum(stringi::stri_count_words(twitter))
+data.frame(source = c("blog","news","twitter"), 
+           filesize = c(blog.size, news.size,twitter.size),
+           No.oflines = c(blogtext_length, newstext_length,twittertext_length),
+           No.ofcharacters = c(blog_char, news_char,twitter_char),
+           No.ofwords = c(blog_words, news_words,twitter_words))
+
+```
+
+#####Analyse the first 5 lines in all three data, and find out how do all 3 data look like. 
+
+```{r, echo = TRUE}
+head(blog,5)
+head(news,5)
+head(twitter,5)
+```
+
+##Cleaned the data and build a merged corpus
+
+What I noticed that data is filled with URLs, special characters, whitespace, punctuation, stopwords, numbers. We should clean the data before we do any exploratory analysis.Used tm pacakge to remove all.
+
+Data from the 3 files merged together. Since each data is so big, for perfomance reason only 1% from the each data are loaded for the purpose of this milestone report.
+
+```{r, echo = TRUE}
+set.seed(4567)
+# What I noticed use library everytime to load the appropriate package, that will reduce getting error while knitting the documnet.
+library(tm)
+# Sample 1 % of the data to simplify computations.
+merged_data <- c(sample(blog, length(blog)*.01), sample(news,length(news)*.01), sample(twitter, length(twitter)*.01))
+# Create a corpus and cleaned the data
+corpus <- VectorSource(merged_data)
+corpus <- VCorpus(corpus)
+toSpace <- content_transformer(function(x, pattern) gsub(pattern, " ", x))
+corpus <- tm_map(corpus, toSpace, "(f|ht)tp(s?)://(.*)[.][a-z]+")
+corpus <- tm_map(corpus, toSpace, "@[^\\s]+")
+corpus <- tm_map(corpus, tolower)
+corpus <- tm_map(corpus, removeWords, stopwords("english"))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, PlainTextDocument)
+# Save the copus in a file for future reference
+writeLines(as.character(corpus), con ="my.coprus.txt")
+save(corpus, file = "corpus.Rdata")
+#library(wordcloud)
+#Just to use wordcloud to make wordcloud model
+#wordcloud(corpus, min.freq = 2,  scale=c(7,0.5),colors=brewer.pal(8, "Dark2"),  random.color= TRUE, random.order = FALSE, max.words = 100)
+```
+
+##Exploratory Analysis
+Data is cleaned and ready to perform exploratory analysis. It would be easy to find the most frequently occuring words in the data. Here we list the most common unigram, bigram and trigram.
+```{r, echo = TRUE}
+library(tm)
+library(RWeka)
+library(slam)
+library(ggplot2)
+plotNGram <- function(n) {
+  options(mc.cores=1)
+# builds n-gram tokenizer and term document matrix
+  tk <- function(x) NGramTokenizer(x, Weka_control(min = n, max = n))
+  tdm <- TermDocumentMatrix(corpus, control=list(tokenize=tk))
+  
+# find 25 most frequent n-grams in the matrix
+  ngram <- as.matrix(rollup(tdm, 2, na.rm=TRUE, FUN=sum))
+  ngram <- data.frame(word=rownames(ngram), freq=ngram[,1])
+  ngram <- ngram[order(-ngram$freq), ][1:25, ]
+  ngram$word <- factor(ngram$word, as.character(ngram$word))
+  
+# plots
+  ggplot(ngram, aes(x=word, y=freq)) + ggtitle("Term Frequency in Top 25") + geom_bar(stat="Identity", fill="grey") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + xlab("Word(s)") + ylab("Frequency")
+}
+plotNGram(1)
+plotNGram(2)
+plotNGram(3)
+plotNGram(4)
+
+```
+
+
+##### What I noticed in top 25 words in unigram most frequent word is just, in bigram rightnow and in trigram happy mothersday.
+
+##Feedback for creating  a prediction algorithm and Shiny App.
+
+The next step of this capstone project would be to build our predictive algorithm  and deploy our algorithm as a Shiny APP.
+
+Our predictive algorithm will be using n-gram model with frequency lookup similar to our exploratory analysis above. One possible strategy would be to use the trigram model to predict the next word. If no matching trigram can be found, then the algorithm would back off to the bigram model, and then to the unigram model if needed.
+
+The user interface of the Shiny app will consist of a text input box that will allow a user to enter a phrase. Then the app will use our algorithm to suggest the most likely next word after a short delay. Our plan is also to allow the user to configure how many words our app should suggest.
+
+
