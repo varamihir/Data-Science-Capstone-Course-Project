@@ -5,11 +5,14 @@
 This presentation is created as a final project of the requirement for the Coursera Data Science Capstone Course.
 The main goal of this capstone course is to build a predictive text model with shiny app that will predict the next word as the user types a word or sentence similar to the way most smartphone keboards are implemented today using the technology of swiftkey.
 
-Please see the link below for shiny app and the github repo for all the codes.
-
+Please see the link below for shiny app developed for this assignment:
+ 
  [Shiny App] <https://support.rstudio.com/hc/en-us/articles/200486468>.
  
+ The source codes of Ui.R, server.R and also representation are available on the Github repo:
+ 
  [Github]
+
  
 **Getting and Cleaning the data**
 
