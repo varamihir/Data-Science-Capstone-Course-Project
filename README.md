@@ -34,7 +34,7 @@ The prediction model for the next word is based on the Katz Back-off algorithum.
 * Backoff algorithum will be used for the prediction where it will be recursively trying from the higher order of n-grams data frame to lower order of n- grams data frame until a resonable probabilty is found.
 Example- If the input is more than 3 words, compare the last 3 words of the user input to the first 3 words of the quadGram data frame. If an appropriate match is not found, then compare the last 2 words of the input to the first 2 words of the triGram dataframe and continue this process until an appropriate match is not found. If not then most common word "the" is returned.
 
-**Shiny Application**
+**Shiny Application Navigation**
 
 A shiny application was developed based on the next word prediction model described previousely, is as shown below with a sample text.
 To display the next predicted word(s), you need to enter word(s) or partial sentence at ENTER THE TEXT/WORD/SENTENCE HERE. **Please wait for 15-20 secs to see the result**.
