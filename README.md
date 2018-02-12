@@ -12,7 +12,8 @@ Please see the link below for shiny app developed for this assignment:
  The source codes of Ui.R, server.R and also representation are available on the Github repo:
  
  [Github] <https://github.com/varamihir/Data-Science-Capstone-Course-Project/>.
-
+ 
+ [Rpub]  <http://rpubs.com/varamihir/CapstoneCourseProject/>.
  
 **Getting and Cleaning the data**
 
