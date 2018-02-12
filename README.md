@@ -7,7 +7,7 @@ The main goal of this capstone course is to build a predictive text model with s
 
 Please see the link below for shiny app developed for this assignment:
  
- [Shiny App] <https://support.rstudio.com/hc/en-us/articles/200486468>.
+ [Shiny App] <https://varamihir.shinyapps.io/CapstoneCourseProjectshinyApp13/>.
  
  The source codes of Ui.R, server.R and also representation are available on the Github repo:
  
