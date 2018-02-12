@@ -37,7 +37,7 @@ Example- If the input is more than 3 words, compare the last 3 words of the user
 **Shiny Application**
 
 A shiny application was developed based on the next word prediction model described previousely, is as shown below with a sample text.
-To display the next predicted word(s), you need to enter word(s) or partial sentence at ENTER THE TEXT/WORD/SENTENCE HERE. **Please wait for 30- 40 secs to see the result**.
+To display the next predicted word(s), you need to enter word(s) or partial sentence at ENTER THE TEXT/WORD/SENTENCE HERE. **Please wait for 15-20 secs to see the result**.
 Input text and the predicted word will be displayed on the right panel.
 
  ![](shinyApp3.png)
