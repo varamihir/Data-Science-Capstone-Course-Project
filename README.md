@@ -22,7 +22,7 @@ Please see the link below for shiny app developed for this assignment:
 remove stripwhitespace, was done by using TM pacakage.
 * The corresponding N-Grams(unigram,bigram, trigram and quadgram) were created using RWeka package.
 * Next the term-count tables were extracted from the N-Grams and sorted based on their frequencies in desecending order.
-* In these data frames each word is represented by 1 column together with the frquency in desecnding order.
+* In these data frames each word is represented by 1 column together with the frquency in desecending order.
 Example -  For quadgram dataframe there are 4 columns for 4 words and another column for frequency.Finally the N-gram objects were saved as R-Compressed files(.RDatafile)
 
 
